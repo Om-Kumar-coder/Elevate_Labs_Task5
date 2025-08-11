@@ -1,0 +1,45 @@
+Protocols I identified (3+)
+
+From the capture screenshots I can clearly see at least these protocols:
+
+1. TCP — many flows (SYN packets, ACKs, retransmissions). Example: Frame 8 shows 10.69.195.150 -> 34.36.137.203, src port 55076 -> dst port 443 (SYN) indicating an HTTPS handshake attempt.
+
+
+2. UDP — DNS and NTP run over UDP in the trace. Example: Frame 7 (screenshot) shows a DNS response src port 53 -> dst ephemeral port 54738 from 10.69.195.52 to 10.69.195.150. NTP packets are also visible in the UDP listing.
+
+
+3. TLS (TLSv1.2) — TLS Client Hello / Server records are visible (SNI contile.services.mozilla.com) over TCP/443.
+
+
+4. QUIC — QUIC Initial/Handshake frames are visible (QUIC runs over UDP and is used for HTTP/3).
+
+
+5. OCSP — OCSP Request/Response messages appear (certificate status checks).
+(So at minimum: TCP, UDP and application-layer TLS/QUIC — plus DNS, OCSP, NTP as application protocols.)
+
+
+
+
+---
+
+Summary of key packet details (from screenshots)
+
+Frame 8 (TCP SYN to HTTPS)
+Src IP: 10.69.195.150 → Dst IP: 34.36.137.203
+Src Port: 55076 → Dst Port: 443
+Flags: [SYN] — beginning of TLS handshake.
+
+TLS Client Hello
+TLSv1.2 Client Hello present; SNI contains contile.services.mozilla.com. TLS record size appears in capture and Wireshark decodes it.
+
+Frame 65 (TCP SYN to port 80)
+Src IP: 10.69.195.150 → Dst IP: 142.250.182.35
+Src Port: 37410 → Dst Port: 80
+Flags: [SYN] — HTTP connection attempt (port 80). OCSP and other HTTP interactions are shown nearby.
+
+Frame 7 (DNS response UDP)
+Src IP: 10.69.195.52 (port 53) → Dst IP: 10.69.195.150 (ephemeral port 54738)
+DNS AAAA/ A responses include contile.services.mozilla.com and other names.
+
+QUIC Handshake packets
+Several QUIC Initial/Handshake packets between 34.36.137.203 and 10.69.195.150 are visible — likely HTTP/3 traffic.
