@@ -1,0 +1,7 @@
+Run tshark -r wireshark.pcap -q -z conv,ip to enumerate top IP conversations.
+
+Export specific flows (by IP and port) to separate PCAPs and analyze RTT, retransmissions and throughput.
+
+If you have the browser SSLKEYLOGFILE keys, load them into Wireshark to decrypt TLS; for QUIC/HTTP3 decryption is more involved.
+
+Correlate retransmissions/dup ACKs with capture host performance or intermediate device behavior.
